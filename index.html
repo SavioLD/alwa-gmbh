@@ -603,7 +603,7 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
         <div class="result" id="screenoutView">
           <div class="result__icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg></div>
           <h3>Danke für dein Interesse</h3>
-          <p>Für diese Stelle setzen wir eine abgeschlossene Ausbildung oder einschlägige Berufserfahrung voraus. Aktuell passt das leider noch nicht. Du bist überzeugt, dass du trotzdem zu uns passt? Dann schreib uns gerne direkt an <a href="mailto:karriere@alwa-gmbh.de">karriere@alwa-gmbh.de</a>.</p>
+          <p>Für diese Stelle setzen wir eine abgeschlossene Ausbildung oder einschlägige Berufserfahrung voraus. Aktuell passt das leider noch nicht. Du bist überzeugt, dass du trotzdem zu uns passt? Dann schreib uns gerne direkt an <a href="mailto:karriere@alwa-gmbh.de">karriere@alwa-gmbh.de</a>.<br /><br />Aus Versehen falsch angeklickt? Lade die Seite einfach neu und versuche es erneut.</p>
         </div>
 
         <div class="fnav" id="formNav">
@@ -680,7 +680,6 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
   var UPLOAD_BUCKET = "bewerbungen";
   var UPLOAD_MAX    = 10 * 1024 * 1024;
   var UPLOAD_TYPES  = ["application/pdf","image/jpeg","image/png","image/webp","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-  var LS_KEY        = "alwa_bewerbung_v1";
   var SCREEN_OUT    = ["Keine Ausbildung und keine Erfahrung im Bereich"];
 
   var ALIASES = {
@@ -715,10 +714,6 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
   loadLogo(document.getElementById("logoHeader"), ["bilder/alwa-logo.svg","bilder/alwa-logo.png","bilder/logo.svg","bilder/logo.png"]);
   loadLogo(document.getElementById("logoHero"),   ["bilder/alwa-logo-weiss.svg","bilder/alwa-logo-weiss.png","bilder/alwa-logo-white.svg","bilder/alwa-logo-white.png","bilder/alwa-logo.svg","bilder/alwa-logo.png"]);
   loadLogo(document.getElementById("logoFooter"), ["bilder/alwa-logo-weiss.svg","bilder/alwa-logo-weiss.png","bilder/alwa-logo-white.svg","bilder/alwa-logo-white.png","bilder/alwa-logo.svg","bilder/alwa-logo.png"]);
-
-  /* ---------- localStorage-Sperre ---------- */
-  function readLS(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch(e){ return null; } }
-  function writeLS(status, stelle){ try { localStorage.setItem(LS_KEY, JSON.stringify({status:status, stelle:stelle||"", ts:Date.now()})); } catch(e){} }
 
   var form=document.getElementById("applyForm"), steps=Array.prototype.slice.call(form.querySelectorAll(".fstep")), TOTAL=steps.length;
   var bar=document.getElementById("progressBar"), label=document.getElementById("stepLabel");
@@ -771,7 +766,7 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
   function isScreenedOut(){ return SCREEN_OUT.indexOf(selectedValue("erfahrung"))!==-1; }
   function next(){
     if (locked || !stepValid(current) || submitting) return;
-    if (current===2 && isScreenedOut()){ showScreenout(true); return; }
+    if (current===2 && isScreenedOut()){ showScreenout(); return; }
     if (current===TOTAL){ submit(); return; }
     current++; render();
     var card=document.querySelector(".form-card");
@@ -886,15 +881,14 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
     });
   }
 
+  /* Screen-out / Erfolg gelten nur für den aktuellen Besuch – ein Seiten-Neuladen
+     startet frisch, sodass man sich erneut bewerben kann (kein dauerhaftes Sperren). */
   function lockForm(){ locked=true; nav.style.display="none"; steps.forEach(function(s){ s.classList.remove("is-active"); }); bar.style.width="100%"; }
-  function finishSuccess(){ writeLS("done", selectedValue("stelle")); lockForm(); screenoutEl.classList.remove("is-visible"); successEl.classList.add("is-visible"); label.textContent="Fertig"; }
-  function showScreenout(persist){ if(persist) writeLS("blocked", selectedValue("stelle")); lockForm(); successEl.classList.remove("is-visible"); screenoutEl.classList.add("is-visible"); label.textContent="Danke"; }
-  function finishSuccessOnLoad(){ lockForm(); successEl.classList.add("is-visible"); successEl.querySelector("p").innerHTML="Deine Bewerbung ist bereits bei uns eingegangen – wir <strong>melden uns persönlich bei dir</strong>. Eine erneute Bewerbung ist nicht nötig."; label.textContent="Fertig"; }
+  function finishSuccess(){ lockForm(); screenoutEl.classList.remove("is-visible"); successEl.classList.add("is-visible"); label.textContent="Fertig"; }
+  function showScreenout(){ lockForm(); successEl.classList.remove("is-visible"); screenoutEl.classList.add("is-visible"); label.textContent="Danke"; }
 
-  var saved=readLS();
-  if (saved && saved.status==="blocked") showScreenout(false);
-  else if (saved && saved.status==="done") finishSuccessOnLoad();
-  else { if(qsStelle) preselect(qsStelle); render(); }
+  if (qsStelle) preselect(qsStelle);
+  render();
 })();
 </script>
 <!-- WEBUNDO Analytics -->
