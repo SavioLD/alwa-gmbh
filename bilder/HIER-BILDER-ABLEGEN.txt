@@ -1,16 +1,20 @@
-ALWA Karriereseite – Hero-Bilder
-================================
+ALWA Karriereseite – Bilder & Logo
+==================================
 
-Lege die Fotos GENAU mit diesen Dateinamen in DIESEN Ordner (bilder/):
+Alles in DIESEN Ordner (bilder/) legen, exakt mit diesen Dateinamen:
 
-  hero.jpg                  -> allgemeines Hero-Bild (Startseite ohne ?stelle=)
-  werkzeugmechaniker.jpg    -> bei ?stelle=werkzeugmechaniker
-  lagerlogistik.jpg         -> bei ?stelle=lagerlogistik
-  qualitaetssicherung.jpg   -> bei ?stelle=qualitaetssicherung
+LOGO (Original ALWA-Logo)
+  alwa-logo.svg           -> farbig/dunkel, fuer hellen Header (SVG bevorzugt; .png geht auch)
+  alwa-logo-weiss.svg     -> WEISSE Version, fuer Hero & Footer (dunkler Grund)
+  (Wird ein Logo gefunden, ersetzt es automatisch den Text-Schriftzug.
+   Fehlt es, bleibt der Text "ALWA" stehen.)
 
-Empfehlung: Querformat, mind. ~1600 px breit, Motiv eher RECHTS
-(links liegt die Textflaeche des Heros).
+HERO-FOTOS
+  hero.jpg                -> allgemeines Hero-Bild (Startseite ohne ?stelle=)
+  werkzeugmechaniker.jpg  -> bei ?stelle=werkzeugmechaniker
+  lagerlogistik.jpg       -> bei ?stelle=lagerlogistik
+  qualitaetssicherung.jpg -> bei ?stelle=qualitaetssicherung
+  (Querformat, mind. ~1600 px breit, Motiv eher RECHTS - links liegt der Text.
+   Fehlt ein Bild, bleibt der Farbverlauf stehen - nichts geht kaputt.)
 
-Der Hero laedt das passende Bild automatisch. Fehlt ein Bild, bleibt
-der Farbverlauf stehen – es geht also nichts kaputt. Diese .txt kann
-nach dem Hochladen geloescht werden.
+Diese .txt kann nach dem Hochladen geloescht werden.
