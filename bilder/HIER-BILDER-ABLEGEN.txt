@@ -1,0 +1,16 @@
+ALWA Karriereseite – Hero-Bilder
+================================
+
+Lege die Fotos GENAU mit diesen Dateinamen in DIESEN Ordner (bilder/):
+
+  hero.jpg                  -> allgemeines Hero-Bild (Startseite ohne ?stelle=)
+  werkzeugmechaniker.jpg    -> bei ?stelle=werkzeugmechaniker
+  lagerlogistik.jpg         -> bei ?stelle=lagerlogistik
+  qualitaetssicherung.jpg   -> bei ?stelle=qualitaetssicherung
+
+Empfehlung: Querformat, mind. ~1600 px breit, Motiv eher RECHTS
+(links liegt die Textflaeche des Heros).
+
+Der Hero laedt das passende Bild automatisch. Fehlt ein Bild, bleibt
+der Farbverlauf stehen – es geht also nichts kaputt. Diese .txt kann
+nach dem Hochladen geloescht werden.
