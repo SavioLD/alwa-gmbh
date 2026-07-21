@@ -216,6 +216,8 @@ section[id],.form-card{scroll-margin-top:80px}
 .apply__reassure span{display:inline-flex;align-items:center;gap:7px}
 .apply__reassure svg{width:17px;height:17px;stroke:var(--brand)}
 .form-card{position:relative;max-width:660px;margin:36px auto 0;background:#fff;border:1.5px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.apply__contact{max-width:660px;margin:18px auto 0;text-align:center;font-size:15px;font-weight:700;color:var(--ink-soft)}
+.apply__contact a{color:var(--brand-dark);text-decoration:underline;white-space:nowrap}
 .form-card__head{padding:24px 32px 0}
 .progress{height:6px;background:var(--panel-2);border-radius:999px;overflow:hidden}
 .progress__bar{height:100%;width:33%;background:var(--brand);border-radius:999px;transition:width .35s ease}
@@ -608,6 +610,11 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
         </div>
       </form>
     </div>
+
+    <p class="apply__contact">
+      Lieber direkt schreiben oder Fragen zur Bewerbung?
+      <a href="mailto:karriere@alwa-gmbh.de?subject=Bewerbung%20bei%20ALWA">karriere@alwa-gmbh.de</a>
+    </p>
   </div>
 </section>
 
@@ -799,11 +806,32 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
     document.getElementById("heroTitle").textContent=qsStelle;
     document.getElementById("heroSub").textContent="Jetzt bei ALWA bewerben – in unter 60 Sekunden, ganz ohne langes Anschreiben.";
   }
+  /* Hero-Fotos: echte ALWA-Dateinamen. Pro Stelle ein Bild, sonst allgemeines.
+     Zum Tauschen einfach die Zuordnung unten ändern. */
+  var HERO_IMG = {
+    "":                    "20240730 ALWA 149weich.jpg",   // allgemein (ohne ?stelle=)
+    "werkzeugmechaniker":  "20240730 ALWA 182weich.jpg",
+    "lagerlogistik":       "20240730 ALWA 173.jpg",
+    "qualitaetssicherung": "20240730 ALWA 144.jpg"
+  };
   (function(){
-    var heroMedia=document.getElementById("heroMedia"), candidate="bilder/"+(qsKey||"hero")+".jpg", probe=new Image();
-    probe.onload=function(){ heroMedia.style.backgroundImage="url('"+candidate+"')"; };
-    probe.onerror=function(){ if(qsKey){ var p2=new Image(); p2.onload=function(){ heroMedia.style.backgroundImage="url('bilder/hero.jpg')"; }; p2.src="bilder/hero.jpg"; } };
-    probe.src=candidate;
+    var heroMedia = document.getElementById("heroMedia");
+    var name = HERO_IMG[qsKey || ""] || HERO_IMG[""];
+    var fallbackName = HERO_IMG[""];
+    // Kandidaten: gewähltes Bild in bilder/ bzw. Root, dann allgemeines Bild als Fallback
+    var cands = [
+      "bilder/" + encodeURIComponent(name),
+      encodeURIComponent(name),
+      "bilder/" + encodeURIComponent(fallbackName),
+      encodeURIComponent(fallbackName)
+    ];
+    (function tryNext(i){
+      if (i >= cands.length) return;         // kein Bild gefunden -> Farbverlauf bleibt
+      var probe = new Image();
+      probe.onload  = function(){ heroMedia.style.backgroundImage = "url('" + cands[i] + "')"; };
+      probe.onerror = function(){ tryNext(i+1); };
+      probe.src = cands[i];
+    })(0);
   })();
 
   /* Upload */
