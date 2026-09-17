@@ -887,12 +887,20 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
   }
 
   function heute(){ var d=new Date(); return ("0"+d.getDate()).slice(-2)+"."+("0"+(d.getMonth()+1)).slice(-2)+"."+d.getFullYear(); }
+  /* Kurzbezeichnung der Stelle – wird ins sichtbare Feld "Erfahrung" mit
+     hineingeschrieben, damit die Position ohne LeadTable-Konfiguration sichtbar ist. */
+  var STELLE_SHORT = {
+    "Werkzeugmechaniker / Formentechnik (m/w/d)":"Werkzeugmechaniker/Formentechnik",
+    "Fachkraft für Lagerlogistik (m/w/d)":"Lagerlogistik",
+    "Fachkraft für Qualitätssicherung (m/w/d)":"Qualitätssicherung"
+  };
   function collect(){
     function val(name){ var c=form.querySelector('input[name="'+name+'"]:checked'); if(c) return c.value; var inp=form.querySelector('input[name="'+name+'"]:not([type="radio"])'); return inp?inp.value.trim():""; }
+    var st=val("stelle"), stShort=STELLE_SHORT[st]||st;
     return { vorname:val("vorname"), nachname:val("nachname"), email:val("email"), telefon:val("telefon"),
-             stelle:val("stelle"),
+             stelle:st,
              "Aktuell in der Kunststoffbranche tätig?":val("branche"),
-             erfahrung:val("erfahrung"),
+             erfahrung:(st ? stShort+" · " : "")+val("erfahrung"),
              "Frühester Start":val("starttermin"),
              "Datum":heute(),
              lebenslauf:"", datenschutz:"Ja (Einwilligung mit Absenden, Art. 6 Abs. 1 lit. a DSGVO)",
