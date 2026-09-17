@@ -553,6 +553,19 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
 
         <!-- STEP 2 -->
         <div class="fstep" data-step="2">
+          <h3>Kurz zu deinem Hintergrund</h3>
+          <p class="hint">Damit wir dich besser einschätzen können.</p>
+          <p class="q">Bist du aktuell in der Kunststoffbranche tätig?<span class="req">*</span></p>
+          <div class="choice-grid" data-field="branche">
+            <label class="choice"><input type="radio" name="branche" value="Ja, aktuell in der Kunststoffbranche" /><span class="key">A</span><span>Ja, aktuell in der Kunststoffbranche</span></label>
+            <label class="choice"><input type="radio" name="branche" value="Ja, in einer verwandten technischen Branche" /><span class="key">B</span><span>Ja, in einer verwandten technischen Branche</span></label>
+            <label class="choice"><input type="radio" name="branche" value="Nein, aber mit technischer Erfahrung" /><span class="key">C</span><span>Nein, aber mit technischer Erfahrung</span></label>
+            <label class="choice"><input type="radio" name="branche" value="Nein" /><span class="key">D</span><span>Nein</span></label>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="fstep" data-step="3">
           <h3>Deine Erfahrung – unsere Expertise</h3>
           <p class="hint">Bei ALWA arbeiten Menschen, die ihr Handwerk verstehen. Sei einfach ehrlich.</p>
           <p class="q">Welche Qualifikation bringst du für die Stelle mit?<span class="req">*</span></p>
@@ -564,8 +577,20 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
           </div>
         </div>
 
-        <!-- STEP 3 -->
-        <div class="fstep" data-step="3">
+        <!-- STEP 4 -->
+        <div class="fstep" data-step="4">
+          <h3>Dein Start bei uns</h3>
+          <p class="hint">Nur eine grobe Einschätzung – nichts ist in Stein gemeißelt.</p>
+          <p class="q">Wann könntest du frühestens anfangen?<span class="req">*</span></p>
+          <div class="choice-grid" data-field="starttermin">
+            <label class="choice"><input type="radio" name="starttermin" value="Sofort" /><span class="key">A</span><span>Sofort</span></label>
+            <label class="choice"><input type="radio" name="starttermin" value="In 1–3 Monaten" /><span class="key">B</span><span>In 1–3 Monaten</span></label>
+            <label class="choice"><input type="radio" name="starttermin" value="Nach Absprache" /><span class="key">C</span><span>Nach Absprache</span></label>
+          </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="fstep" data-step="5">
           <h3>Du hast es fast geschafft</h3>
           <p class="hint">Hinterlasse kurz deine Kontaktdaten. Wir melden uns persönlich bei dir.</p>
           <div class="frow">
@@ -764,10 +789,11 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
     btnNext.disabled=!stepValid(current);
     errBox.classList.remove("is-visible");
   }
+  var ERF_STEP = steps.findIndex(function(s){ return s.querySelector('[name="erfahrung"]'); }) + 1;
   function isScreenedOut(){ return SCREEN_OUT.indexOf(selectedValue("erfahrung"))!==-1; }
   function next(){
     if (locked || !stepValid(current) || submitting) return;
-    if (current===2 && isScreenedOut()){ showScreenout(); return; }
+    if (current===ERF_STEP && isScreenedOut()){ showScreenout(); return; }
     if (current===TOTAL){ submit(); return; }
     current++; render();
     var card=document.querySelector(".form-card");
@@ -860,10 +886,16 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
     return attempt().catch(function(){ return attempt().catch(function(){ var e=new Error("upload_failed"); e.isUploadError=true; throw e; }); });
   }
 
+  function heute(){ var d=new Date(); return ("0"+d.getDate()).slice(-2)+"."+("0"+(d.getMonth()+1)).slice(-2)+"."+d.getFullYear(); }
   function collect(){
     function val(name){ var c=form.querySelector('input[name="'+name+'"]:checked'); if(c) return c.value; var inp=form.querySelector('input[name="'+name+'"]:not([type="radio"])'); return inp?inp.value.trim():""; }
-    return { vorname:val("vorname"), nachname:val("nachname"), name:(val("vorname")+" "+val("nachname")).trim(), email:val("email"), telefon:val("telefon"),
-             stelle:val("stelle"), erfahrung:val("erfahrung"), lebenslauf:"", datenschutz:"Ja (Einwilligung mit Absenden, Art. 6 Abs. 1 lit. a DSGVO)",
+    return { vorname:val("vorname"), nachname:val("nachname"), email:val("email"), telefon:val("telefon"),
+             stelle:val("stelle"),
+             "Aktuell in der Kunststoffbranche tätig?":val("branche"),
+             erfahrung:val("erfahrung"),
+             "Frühester Start":val("starttermin"),
+             "Datum":heute(),
+             lebenslauf:"", datenschutz:"Ja (Einwilligung mit Absenden, Art. 6 Abs. 1 lit. a DSGVO)",
              quelle:"Karriere-Landingpage ALWA", seite:location.href };
   }
   function submit(){
