@@ -899,10 +899,10 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
     var st=val("stelle"), stShort=STELLE_SHORT[st]||st;
     return { vorname:val("vorname"), nachname:val("nachname"), email:val("email"), telefon:val("telefon"),
              stelle:st,
-             "Aktuell in der Kunststoffbranche tätig?":val("branche"),
+             branche:val("branche"),
              erfahrung:(st ? stShort+" · " : "")+val("erfahrung"),
-             "Frühester Start":val("starttermin"),
-             "Datum":heute(),
+             starttermin:val("starttermin"),
+             datum:heute(),
              lebenslauf:"", datenschutz:"Ja (Einwilligung mit Absenden, Art. 6 Abs. 1 lit. a DSGVO)",
              quelle:"Karriere-Landingpage ALWA", seite:location.href };
   }
