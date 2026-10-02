@@ -701,6 +701,7 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
   "use strict";
 
   var WEBHOOK_URL = "https://api.lead-table.com/api/webhook/generic/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0YWJsZUlEIjoiNjliZDc5YjZlNGQxN2IzOGVkNjU2ZjhiIiwiY3VzdG9tZXJJRCI6IjY5YmQ3OWFhZTRkMTdiMzhlZDY1NmVkMiIsImFnZW5jeUlEIjoiNjliZDc3NzVlNGQxN2IzOGVkNjUzZDE2IiwiaWF0IjoxNzc0MDI1MTQyfQ.9wSPOEDc48O04YMy1OvCK662WMrNNy49RqL5xd9uPXk";
+  var WEB3FORMS_KEY = "57e17fec-0ccc-4d81-9e92-ca70c1a9ccd9"; /* E-Mail-Benachrichtigung bei neuer Bewerbung */
   var SUPABASE_URL  = "https://kxqdybjkcrowqdcpvlqa.supabase.co";
   var SUPABASE_KEY  = "sb_publishable_HRuh5O03dI84U_OngeWfRg_GwKnWkYp";
   var UPLOAD_BUCKET = "bewerbungen";
@@ -906,12 +907,39 @@ footer{padding:52px 0 36px;background:var(--brand-900);color:#dcf1f9}
              lebenslauf:"", datenschutz:"Ja (Einwilligung mit Absenden, Art. 6 Abs. 1 lit. a DSGVO)",
              quelle:"Karriere-Landingpage ALWA", seite:location.href };
   }
+  /* E-Mail-Benachrichtigung bei neuer Bewerbung (Web3Forms). Fire-and-forget:
+     blockiert die Bewerbung nicht und laesst sie nicht fehlschlagen. */
+  function notifyEmail(data){
+    try {
+      var mail = {
+        access_key: WEB3FORMS_KEY,
+        subject: "Neue Bewerbung – " + (data.stelle || "ALWA") + " – " + data.vorname + " " + data.nachname,
+        from_name: "ALWA Karriere-Landingpage",
+        replyto: data.email,
+        Stelle: data.stelle,
+        Name: (data.vorname + " " + data.nachname).trim(),
+        Telefon: data.telefon,
+        "E-Mail": data.email,
+        "Aktuell in der Kunststoffbranche tätig?": data.branche,
+        Erfahrung: data.erfahrung,
+        "Frühester Start": data.starttermin,
+        Lebenslauf: data.lebenslauf,
+        Bewerbungsdatum: data.datum
+      };
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(mail)
+      }).catch(function(){});
+    } catch(e){}
+  }
   function submit(){
     if (form.querySelector('input[name="firma_website"]').value){ finishSuccess(); return; }
     submitting=true; btnNext.disabled=true; btnNext.textContent=cvFile?"Lebenslauf wird hochgeladen …":"Wird gesendet …"; errBox.classList.remove("is-visible");
     uploadCv().then(function(cvUrl){
       btnNext.textContent="Wird gesendet …";
       var data=collect(); data.lebenslauf=cvUrl||"nicht hochgeladen"; var payload=JSON.stringify(data);
+      notifyEmail(data);
       return fetch(WEBHOOK_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:payload })
         .then(function(res){ if(!res.ok) throw new Error("HTTP "+res.status); finishSuccess(); })
         .catch(function(){ return fetch(WEBHOOK_URL,{ method:"POST", mode:"no-cors", headers:{ "Content-Type":"text/plain" }, body:payload }).then(finishSuccess); });
